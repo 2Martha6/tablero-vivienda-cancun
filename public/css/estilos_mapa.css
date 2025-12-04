@@ -172,3 +172,49 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Int
 .info-value.highlight { color: var(--green-primary); font-size: 1.4rem; }
 .service-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
 .service-val { font-weight: 700; color: #1f2937; }
+
+/* Contenedor del loader */
+.loader-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
+    z-index: 2000; /* Por encima del mapa pero debajo de otros modales si hay */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease; /* Efecto suave al desaparecer */
+}
+
+/* El círculo giratorio */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e5e7eb; /* Gris claro */
+    border-top: 5px solid #10b981; /* Verde (tu color principal) */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+/* Texto del loader */
+.loader-container p {
+    color: #374151;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Animación de giro */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Clase para ocultarlo suavemente */
+.loader-hidden {
+    opacity: 0;
+    pointer-events: none; /* Para que puedas dar clic al mapa aunque siga ahí invisible */
+}

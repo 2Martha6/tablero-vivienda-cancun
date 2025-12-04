@@ -140,46 +140,64 @@ function getColor(d, type) {
 
 // 5. CARGA DE DATOS (FETCH API)
 
-// Ruta relativa estándar
-fetch('/get-manzanas')
+// Usamos la variable API_URL que definimos en el HTML
+fetch(API_URL)
     .then(response => response.json())
     .then(data => {
         
-        // Crear la capa GeoJSON con los datos recibidos
+        // AQUI EMPIEZA LO NUEVO:
+        // CodeIgniter ya nos dio los datos, ahora Leaflet los dibuja
+        
         geoJsonLayer = L.geoJSON(data, {
             style: defaultStyle,
-            
-            // Función que se ejecuta por cada polígono
             onEachFeature: function (feature, layer) {
                 layer.on('click', function (e) {
                     const props = e.target.feature.properties;
                     
-                    // 1. Manejar el estilo de selección
+                    // Lógica de selección (resaltar manzana)
                     if (highlightedLayer) {
-                        // Si había uno seleccionado, restaurar su estilo 
                         const theme = document.getElementById('filtro-tema').value;
                         if (theme === 'none') {
                             geoJsonLayer.resetStyle(highlightedLayer);
                         } else {
-                            // Si hay un tema activo, volver a pintar del color del tema
                             applyThemeColor(highlightedLayer, theme);
                         }
                     }
                     
-                    // Resaltar el nuevo
                     layer.setStyle(highlightStyle);
                     highlightedLayer = layer;
                     
-                    // 2. Mostrar la tarjeta de información
                     showInfoCard(props);
                 });
             }
         }).addTo(map);
 
-        // Una vez cargados los datos, inicializamos las gráficas del Storytelling
+        // Inicializamos las gráficas
         initStoryCharts(data.features);
+
+        // 🟢 ESTA ES LA PARTE IMPORTANTE (EL CARGANDO)
+        // Como ya terminó de pintar todo lo de arriba, quitamos la pantalla de carga
+        const loader = document.getElementById('map-loader');
+        if (loader) {
+            // Le añadimos la clase que lo hace transparente
+            loader.classList.add('loader-hidden');
+            
+            // Esperamos medio segundo (500ms) a que se desvanezca y lo borramos
+            setTimeout(() => { 
+                loader.style.display = 'none'; 
+            }, 500);
+        }
+
     })
-    .catch(error => console.error("Error cargando datos:", error));
+    .catch(error => {
+        console.error("Error cargando datos:", error);
+        
+        // Si algo falla, mostramos el error en la pantalla de carga
+        const loader = document.getElementById('map-loader');
+        if(loader) {
+            loader.innerHTML = '<div style="text-align:center; color:red;"><h3>Error :(</h3><p>No se pudieron cargar los datos.</p></div>';
+        }
+    });
 
 // 6. GRÁFICAS DEL STORYTELLING 
 

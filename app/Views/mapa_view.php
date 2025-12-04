@@ -183,6 +183,10 @@
         <!-- MAPA -->
         <div class="map-area">
             <div id="map"></div>
+            <div id="map-loader" class="loader-container">
+        <div class="spinner"></div>
+        <p>Cargando datos del INEGI...</p>
+    </div>
             <div id="floating-info-card">
                 <div class="card-header">
                     <h3 class="card-title">Datos de la Manzana</h3>
